@@ -465,18 +465,26 @@ class CloudStorageApplicationTests {
 		// do
 		var credentialTabPage = new CredentialsTabPage(driver);
 		var webDriverWait = doAddCredential(url, username, password);
-		// edit.
+		// go to edit view.
 		String editedUsername = "editedCredential";
 		var credentialRow = credentialTabPage.getCredentialRows()
-				.get(0);
+				.get(credentialTabPage.getCredentialRows().size() - 1);
 		credentialRow.findElement(By.className("btn-success"))
 				.click();
 		webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("credential-id")));
+
+		// assert decrypted password
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
+		var actualPassword = driver.findElement(By.id("credential-password")).getAttribute("value");
+		Assertions.assertEquals(password, actualPassword);
+
+		// edit
 		String script = "return document.getElementById('credential-id').getAttribute('value');";
 		String credentialId = ((JavascriptExecutor) driver).executeScript(script).toString();
 		credentialTabPage.editCredential(credentialId,
 				url, editedUsername, password);
 		goToCredentialsTabFromResultPage(webDriverWait, credentialTabPage);
+
 		// assert
 		var credentialUsernames = credentialTabPage.getCredentialRows().stream()
 				.map(webElem -> webElem.findElement(By.className("credential-username")).getText())

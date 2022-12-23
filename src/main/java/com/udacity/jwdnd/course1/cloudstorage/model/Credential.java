@@ -7,6 +7,7 @@ public class Credential {
     private String username;
     private String password;
     private String encodedKey;
+    private String decryptedPassword;
     private int userId;
 
     public Credential(Integer id, String url, String username,
@@ -65,5 +66,13 @@ public class Credential {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getDecryptedPassword() {
+        return decryptedPassword;
+    }
+
+    public void setDecryptedPassword(String decryptedPassword) {
+        this.decryptedPassword = decryptedPassword;
     }
 }

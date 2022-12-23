@@ -264,7 +264,7 @@
                                     <tr th:each="credential : ${credentials}"
                                         th:id="${#ids.seq('credential')}">
                                         <td>
-                                            <button th:onclick="showCredentialModal([[${credential.id}]], [[${credential.url}]], [[${credential.username}]], [[${credential.password}]])"
+                                            <button th:onclick="showCredentialModal([[${credential.id}]], [[${credential.url}]], [[${credential.username}]], [[${credential.decryptedPassword}]])"
                                                 type="button"
                                                 class="btn btn-success">Edit</button>
                                             <a th:href="@{/credential/delete(id=${credential.id})}"

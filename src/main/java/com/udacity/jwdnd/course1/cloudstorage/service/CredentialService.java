@@ -23,7 +23,10 @@ public class CredentialService {
 
     public List<Credential> getCredentials(Integer userId) {
         var credentials = credentialMapper.getAllCredentials(userId);
-        credentials.forEach(credential -> credential.setEncodedKey(""));
+        credentials.forEach(credential -> {
+            credential.setDecryptedPassword(decryptPassword(credential.getPassword(), credential.getEncodedKey()));
+            credential.setEncodedKey("");
+        });
         return credentials;
     }
 
@@ -57,6 +60,10 @@ public class CredentialService {
 
     private String encryptPassword(String password, String key) {
         return encryptionService.encryptValue(password, key);
+    }
+
+    private String decryptPassword(String password, String key) {
+        return encryptionService.decryptValue(password, key);
     }
 
     private void updateKeyAndPassword(CredentialDao credential) {
