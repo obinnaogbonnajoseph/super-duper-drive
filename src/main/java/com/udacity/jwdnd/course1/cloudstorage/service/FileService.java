@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.service;
 
+import com.udacity.jwdnd.course1.cloudstorage.exception.FileExistsException;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,10 @@ public class FileService {
         return fileMapper.getAllFiles(userId);
     }
 
-    public void addFile(File file) throws Exception {
-        var existingFile = fileMapper.getFileByName(file.getFileName());
+    public void addFile(File file) throws FileExistsException {
+        var existingFile = fileMapper.getFileByName(file.getFileName(), file.getUserId());
         if(existingFile != null) {
-            throw new Exception("File already exists");
+            throw new FileExistsException("File already exists");
         }
         fileMapper.insertFile(file);
     }

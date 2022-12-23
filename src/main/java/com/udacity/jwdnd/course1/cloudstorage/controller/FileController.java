@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.exception.FileExistsException;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.service.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
@@ -38,7 +39,7 @@ public class FileController {
             try {
                 fileService.addFile(fileToUpload);
                 model.addAttribute("success", true);
-            } catch(Exception e) {
+            } catch(FileExistsException e) {
                 model.addAttribute("error", true);
                 model.addAttribute("errorMsg", "File with name already exists");
             }
