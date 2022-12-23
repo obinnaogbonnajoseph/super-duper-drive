@@ -23,18 +23,23 @@
                 class="alert alert-success fill-parent">
                 <h1 class="display-5"
                     id="success">Success</h1>
-                <span>Your changes were successfully saved. Click <a id="success-back" th:href='@{/home}'>here</a> to continue.</span>
+                <span>Your changes were successfully saved. Click <a id="success-back"
+                        th:href='@{/home}'>here</a> to continue.</span>
             </div>
             <div th:if="${error}"
                 class="alert alert-danger fill-parent">
-                <h1 class="display-5">Error</h1>
-                <span>Your changes were not saved. Click <a id="error-back" th:href='@{/home}'>here</a> to continue.</span>
+                <h1 id="error"
+                    class="display-5">Error</h1>
+                <span>Your changes were not saved. Click <a id="error-back"
+                        th:href='@{/home}'>here</a> to continue.</span>
             </div>
             <div th:if="${errorMsg}"
                 class="alert alert-danger fill-parent">
                 <h1 class="display-5">Error</h1>
-                <span th:text="${errorMsg}">Example Error Message</span>
-                <span>Click <a id="error-msg-back" th:href='@{/home}'>here</a> to continue.</span>
+                <span id="error-msg"
+                    th:text="${errorMsg}">Example Error Message</span>
+                <span>Click <a id="error-msg-back"
+                        th:href='@{/home}'>here</a> to continue.</span>
             </div>
         </div>
     </body>

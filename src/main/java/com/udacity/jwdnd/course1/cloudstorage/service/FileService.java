@@ -19,7 +19,11 @@ public class FileService {
         return fileMapper.getAllFiles(userId);
     }
 
-    public void addFile(File file) {
+    public void addFile(File file) throws Exception {
+        var existingFile = fileMapper.getFileByName(file.getFileName());
+        if(existingFile != null) {
+            throw new Exception("File already exists");
+        }
         fileMapper.insertFile(file);
     }
 

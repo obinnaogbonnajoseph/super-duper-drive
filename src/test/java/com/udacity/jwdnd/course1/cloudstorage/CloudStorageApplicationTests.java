@@ -49,14 +49,14 @@ class CloudStorageApplicationTests {
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
-	private void doMockSignUp(String firstName, String lastName, String userName, String password){
+	private void doMockSignUp(String firstName, String lastName, String userName, String password) {
 		// Create a dummy account for logging in later.
 
 		// Visit the sign-up page.
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		driver.get("http://localhost:" + this.port + "/signup");
 		webDriverWait.until(ExpectedConditions.titleContains("Sign Up"));
-		
+
 		// Fill out credentials
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputFirstName")));
 		WebElement inputFirstName = driver.findElement(By.id("inputFirstName"));
@@ -83,21 +83,20 @@ class CloudStorageApplicationTests {
 		WebElement buttonSignUp = driver.findElement(By.id("buttonSignUp"));
 		buttonSignUp.click();
 
-		/* Check that the sign-up was successful.
-		// You may have to modify the element "success-msg" and the sign-up 
-		// success message below depending on the rest of your code.
-		*/
-//		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
+		/*
+		 * Check that the sign-up was successful.
+		 * // You may have to modify the element "success-msg" and the sign-up
+		 * // success message below depending on the rest of your code.
+		 */
+		// Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You
+		// successfully signed up!"));
 	}
 
-	
-	
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
-	private void doLogIn(String userName, String password)
-	{
+	private void doLogIn(String userName, String password) {
 		// Log in to our dummy account.
 		driver.get("http://localhost:" + this.port + "/login");
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
@@ -122,7 +121,7 @@ class CloudStorageApplicationTests {
 
 	private WebDriverWait doUploadFile(String fileName) {
 		// Create a test account
-		doMockSignUp("Large File","Test","LFT","123");
+		doMockSignUp("Large File", "Test", "LFT", "123");
 		doLogIn("LFT", "123");
 
 		// Try to upload an arbitrary large file
@@ -134,12 +133,23 @@ class CloudStorageApplicationTests {
 
 		WebElement uploadButton = driver.findElement(By.id("uploadButton"));
 		uploadButton.click();
-		try {
-			webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("success")));
-		} catch (org.openqa.selenium.TimeoutException e) {
-			System.out.println("Large File upload failed");
-		}
 		return webDriverWait;
+	}
+
+	private void doUploadEmptyFile() {
+		// Create a test account
+		doMockSignUp("Large File", "Test", "LFT", "123");
+		doLogIn("LFT", "123");
+
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
+
+		// click on upload
+		WebElement uploadButton = driver.findElement(By.id("uploadButton"));
+		uploadButton.click();
+
+		webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("error")));
+
 	}
 
 	private void goBackToHomeFromResultPage(WebDriverWait webDriverWait) {
@@ -153,8 +163,9 @@ class CloudStorageApplicationTests {
 		backButton.click();
 	}
 
-	private WebDriverWait doUploadFileAndGoBackToHomePage(String fileName) {
-		var webDriverWait = doUploadFile(fileName);
+	private WebDriverWait doUploadFileAndGoBackToHomePage() {
+		var webDriverWait = doUploadFile("TEST_TDS.pdf");
+		webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("success")));
 		goBackToHomeFromResultPage(webDriverWait);
 		return webDriverWait;
 	}
@@ -173,7 +184,7 @@ class CloudStorageApplicationTests {
 
 	private WebDriverWait doAddNote(String title, String description) {
 		// Create a test account
-		doMockSignUp("Add Note","Test","TAN","234");
+		doMockSignUp("Add Note", "Test", "TAN", "234");
 		doLogIn("TAN", "234");
 		// Try to add a note
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
@@ -210,6 +221,13 @@ class CloudStorageApplicationTests {
 		return webDriverWait;
 	}
 
+	private void cleanFileUpload() {
+		var fileTabpage = new FileTabPage(driver);
+		var webDriverWait = new WebDriverWait(driver, 2);
+		fileTabpage.deleteButtons().get(0).click();
+		goBackToHomeFromResultPage(webDriverWait);
+	}
+
 	@Test
 	public void getLoginPage() {
 		driver.get("http://localhost:" + this.port + "/login");
@@ -222,7 +240,8 @@ class CloudStorageApplicationTests {
 	 * This test is provided by Udacity to perform some basic sanity testing of
 	 * your code to ensure that it meets certain rubric criteria.
 	 *
-	 * If this test is failing, please ensure that you are handling redirecting users
+	 * If this test is failing, please ensure that you are handling redirecting
+	 * users
 	 * back to the login page after a successful sign-up.
 	 * Read more about the requirement in the rubric:
 	 * https://review.udacity.com/#!/rubrics/2724/view
@@ -230,7 +249,7 @@ class CloudStorageApplicationTests {
 	@Test
 	public void testRedirection() {
 		// Create a test account
-		doMockSignUp("Redirection","Test","RT","123");
+		doMockSignUp("Redirection", "Test", "RT", "123");
 
 		// Check if we have been redirected to the login page.
 		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
@@ -251,7 +270,7 @@ class CloudStorageApplicationTests {
 	@Test
 	public void testBadUrl() {
 		// Create a test account
-		doMockSignUp("URL","Test","UT","123");
+		doMockSignUp("URL", "Test", "UT", "123");
 		doLogIn("UT", "123");
 
 		// Try to access a random made-up URL.
@@ -271,37 +290,71 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals("Login", driver.getTitle());
 	}
 
-
 	/**
 	 * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the
 	 * rest of your code.
 	 * This test is provided by Udacity to perform some basic sanity testing of
 	 * your code to ensure that it meets certain rubric criteria.
 	 *
-	 * If this test is failing, please ensure that you are handling uploading large files (>1MB),
+	 * If this test is failing, please ensure that you are handling uploading large
+	 * files (>1MB),
 	 * gracefully in your code.
 	 *
 	 * Read more about file size limits here:
-	 * https://spring.io/guides/gs/uploading-files/ under the "Tuning File Upload Limits" section.
+	 * https://spring.io/guides/gs/uploading-files/ under the "Tuning File Upload
+	 * Limits" section.
 	 */
 	@Test
 	public void testLargeUpload() {
-		doUploadFile("upload5m.zip");
+		var webDriverWait = doUploadFile("upload5m.zip");
+		try {
+			webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("success")));
+		} catch (org.openqa.selenium.TimeoutException e) {
+			System.out.println("Large File upload failed");
+		}
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
-
 	}
 
 	@Test
 	public void testUploadSuccess() {
-		doUploadFileAndGoBackToHomePage("TEST_TDS.pdf");
+		doUploadFileAndGoBackToHomePage();
 		// check that file exists on the table
 		var fileTabPage = new FileTabPage(driver);
 		Assertions.assertTrue(fileTabPage.fileNames().size() > 0);
+		cleanFileUpload();
+	}
+
+	@Test
+	public void testUploadAlreadyExistingFile() {
+		var webDriverWait = doUploadFileAndGoBackToHomePage();
+		// upload again
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
+		WebElement fileSelectButton = driver.findElement(By.id("fileUpload"));
+		fileSelectButton.sendKeys(new File("TEST_TDS.pdf").getAbsolutePath());
+
+		WebElement uploadButton = driver.findElement(By.id("uploadButton"));
+		uploadButton.click();
+
+		webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("error")));
+
+		Assertions.assertEquals("File with name already exists",
+				driver.findElement(By.id("error-msg")).getText());
+		// go back
+		driver.findElement(By.id("error-msg-back")).click();
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
+
+		cleanFileUpload();
+	}
+
+	@Test
+	public void testUploadEmptyFile() {
+		doUploadEmptyFile();
+		Assertions.assertEquals(driver.findElement(By.id("error-msg")).getText(), "No file selected");
 	}
 
 	@Test
 	public void testFileDeleteSuccess() {
-		var webDriverWait = doUploadFileAndGoBackToHomePage("TEST_TDS.pdf");
+		var webDriverWait = doUploadFileAndGoBackToHomePage();
 		var fileTabPage = new FileTabPage(driver);
 		// delete file;
 		fileTabPage.deleteButtons().get(0).click();
@@ -309,17 +362,17 @@ class CloudStorageApplicationTests {
 		goBackToHomeFromResultPage(webDriverWait);
 		// assert
 		Assertions.assertEquals(0, fileTabPage.fileNames().size());
-
 	}
 
 	@Test
 	public void testFileView() {
-		var webDriverWait = doUploadFileAndGoBackToHomePage("TEST_TDS.pdf");
+		doUploadFileAndGoBackToHomePage();
 		var fileTabPage = new FileTabPage(driver);
 		// view file;
 		fileTabPage.viewButtons().get(0).click();
 		// assert
 		Assertions.assertTrue(driver.getCurrentUrl().contains("home"));
+		cleanFileUpload();
 	}
 
 	@Test

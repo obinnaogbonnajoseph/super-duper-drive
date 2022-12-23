@@ -28,11 +28,21 @@ public class FileController {
     @PostMapping("upload")
     public String uploadFile(@RequestParam("fileUpload")MultipartFile file, Model model,
                              Authentication authentication) throws IOException {
-        var user = userService.getUser(authentication.getName());
-        var fileToUpload = new File(null, file.getOriginalFilename(),
-                file.getContentType(),  file.getSize(), user.getId(), file.getBytes());
-        fileService.addFile(fileToUpload);
-        model.addAttribute("success", true);
+        if(file.getSize() == 0) {
+            model.addAttribute("error", true);
+            model.addAttribute("errorMsg", "No file selected");
+        } else {
+            var user = userService.getUser(authentication.getName());
+            var fileToUpload = new File(null, file.getOriginalFilename(),
+                    file.getContentType(),  file.getSize(), user.getId(), file.getBytes());
+            try {
+                fileService.addFile(fileToUpload);
+                model.addAttribute("success", true);
+            } catch(Exception e) {
+                model.addAttribute("error", true);
+                model.addAttribute("errorMsg", "File with name already exists");
+            }
+        }
         return "result";
     }
 
