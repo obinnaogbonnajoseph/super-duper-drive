@@ -1,5 +1,5 @@
 # Super*Duper*Drive Cloud Storage
-A Cloud Storage web api that includes three user-facing features:
+A Cloud Storage*Web*Application that includes three user-facing features:
 
 1. **Simple File Storage:** Upload/download/remove files
 2. **Note Management:** Add/update/remove text notes
